@@ -1,6 +1,6 @@
-# μC/OS-II for Visual Studio 2017
+# μC/OS-II and μC/OS-III for Visual Studio
 
-修改自Micrium官网适配给VS2017源码，加入卢有亮的《嵌入式实时操作系统μC/OS原理与实践》移植代码中的实验例子。
+修改自Micrium官网适配给Visual Studio源码，加入卢有亮的《嵌入式实时操作系统μC/OS原理与实践》移植代码中的实验例子。
 
 ## 包含的 MICRIUM 产品版本
 
@@ -11,7 +11,7 @@
  
 ## IDE 环境要求
 
-- Visual Studio v2017
+- Visual Studio Community v2019 
  
 ## VS解决方案文件路径
 
@@ -25,7 +25,6 @@
 3. 修改`Windows SDK Version`为可用的版本，比如`10.0.17134.0`
 4. 编译并运行
 
-![vs2017 sdk](./media/vs2017_sdk.png)
 
 ## 原始链接
 
