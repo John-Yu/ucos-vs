@@ -1,36 +1,27 @@
 /*
 *********************************************************************************************************
-*                                                uC/OS-III
-*                                          The Real-Time Kernel
+*                                              uC/OS-III
+*                                        The Real-Time Kernel
 *
+*                    Copyright 2009-2020 Silicon Laboratories Inc. www.silabs.com
 *
-*                           (c) Copyright 2009-2017; Micrium, Inc.; Weston, FL
-*                    All rights reserved.  Protected by international copyright laws.
+*                                 SPDX-License-Identifier: APACHE-2.0
+*
+*               This software is subject to an open source license and is distributed by
+*                Silicon Laboratories Inc. pursuant to the terms of the Apache License,
+*                    Version 2.0 available at www.apache.org/licenses/LICENSE-2.0.
+*
+*********************************************************************************************************
+*/
+
+/*
+*********************************************************************************************************
 *
 *                                          Microsoft Win32 Port
 *
-* File    : OS_CPU_C.C
-* Version : V3.06.02
-* By      : FGK
-*
-* LICENSING TERMS:
-* ---------------
-*           uC/OS-III is provided in source form for FREE short-term evaluation, for educational use or 
-*           for peaceful research.  If you plan or intend to use uC/OS-III in a commercial application/
-*           product then, you need to contact Micrium to properly license uC/OS-III for its use in your 
-*           application/product.   We provide ALL the source code for your convenience and to help you 
-*           experience uC/OS-III.  The fact that the source is provided does NOT mean that you can use 
-*           it commercially without paying a licensing fee.
-*
-*           Knowledge of the source code may NOT be used to develop a similar product.
-*
-*           Please help us continue to provide the embedded community with the finest software available.
-*           Your honesty is greatly appreciated.
-*
-*           You can find our product's user manual, API reference, release notes and
-*           more information at doc.micrium.com.
-*           You can contact us at www.micrium.com.
-*
+* File      : os_cpu_c.c
+* Version   : V3.08.00
+*********************************************************************************************************
 * For       : Win32
 * Toolchain : Visual Studio
 *********************************************************************************************************
@@ -42,7 +33,6 @@
 const  CPU_CHAR  *os_cpu_c__c = "$Id: $";
 #endif
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                            INCLUDE FILES
@@ -63,8 +53,17 @@ const  CPU_CHAR  *os_cpu_c__c = "$Id: $";
 extern  "C" {
 #endif
 
+/*
+*********************************************************************************************************
+*                                         CONFIGURATION CHECKS
+*********************************************************************************************************
+*/
 
-/*$PAGE*/
+#if (OS_CFG_TICK_EN == 0u)
+#error "OS_CFG.H, The Win32 port does not support tickless mode. OS_CFG_TICK_EN must be enabled."
+#endif
+
+
 /*
 *********************************************************************************************************
 *                                            LOCAL DEFINES
@@ -135,7 +134,6 @@ typedef  struct  threadname_info {
 #endif
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                           LOCAL VARIABLES
@@ -176,7 +174,6 @@ static  int             OS_Printf         (char      *p_str, ...);
 #endif
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                           IDLE TASK HOOK
@@ -202,7 +199,6 @@ void  OSIdleTaskHook (void)
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                       OS INITIALIZATION HOOK
@@ -351,7 +347,6 @@ void  OSInitHook (void)
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                         STATISTIC TASK HOOK
@@ -375,7 +370,6 @@ void  OSStatTaskHook (void)
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                         TASK CREATION HOOK
@@ -472,7 +466,6 @@ void  OSTaskCreateHook (OS_TCB  *p_tcb)
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                         TASK DELETION HOOK
@@ -533,7 +526,6 @@ void  OSTaskDelHook (OS_TCB  *p_tcb)
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                          TASK RETURN HOOK
@@ -559,7 +551,6 @@ void  OSTaskReturnHook (OS_TCB  *p_tcb)
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                      INITIALIZE A TASK'S STACK
@@ -619,7 +610,6 @@ CPU_STK  *OSTaskStkInit (OS_TASK_PTR    p_task,
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                          TASK SWITCH HOOK
@@ -680,7 +670,6 @@ void  OSTaskSwHook (void)
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                              TICK HOOK
@@ -703,7 +692,6 @@ void  OSTimeTickHook (void)
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                              START HIGHEST PRIORITY TASK READY-TO-RUN
@@ -777,7 +765,6 @@ void  OSStartHighRdy (void)
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                      TASK LEVEL CONTEXT SWITCH
@@ -933,7 +920,6 @@ void  OSCtxSw (void)
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                   INTERRUPT LEVEL CONTEXT SWITCH
@@ -964,7 +950,6 @@ void  OSIntCtxSw (void)
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                        OSIntCurTaskSuspend()
@@ -973,8 +958,8 @@ void  OSIntCtxSw (void)
 *
 * Arguments  : None.
 *
-* Returns    : DEF_TRUE,  current task     suspended successfully.
-*              DEF_FALSE, current task NOT suspended.
+* Returns    : OS_TRUE,  current task     suspended successfully.
+*              OS_FALSE, current task NOT suspended.
 *
 * Notes      : 1) Current task MUST be suspended before OSIntEnter().
 *
@@ -999,7 +984,7 @@ CPU_BOOLEAN  OSIntCurTaskSuspend (void)
 
              p_task->TaskState = STATE_INTERRUPTED;
 
-             ret = DEF_TRUE;
+             ret = OS_TRUE;
              break;
 
 
@@ -1009,7 +994,7 @@ CPU_BOOLEAN  OSIntCurTaskSuspend (void)
 
              OSTaskTerminate(p_task);
 
-             ret = DEF_TRUE;
+             ret = OS_TRUE;
              break;
 
 
@@ -1020,7 +1005,7 @@ CPU_BOOLEAN  OSIntCurTaskSuspend (void)
                        p_task->OSTaskName,
                        p_task->ThreadID);
 
-             ret = DEF_FALSE;
+             ret = OS_FALSE;
              break;
 
 
@@ -1030,7 +1015,7 @@ CPU_BOOLEAN  OSIntCurTaskSuspend (void)
                        p_task->OSTaskName,
                        p_task->ThreadID);
 
-             ret = DEF_FALSE;
+             ret = OS_FALSE;
              break;
 
 
@@ -1040,7 +1025,7 @@ CPU_BOOLEAN  OSIntCurTaskSuspend (void)
                        p_task->OSTaskName,
                        p_task->ThreadID);
 
-             ret = DEF_FALSE;
+             ret = OS_FALSE;
              break;
 
 
@@ -1050,7 +1035,7 @@ CPU_BOOLEAN  OSIntCurTaskSuspend (void)
                        p_task->OSTaskName,
                        p_task->ThreadID);
 
-             ret = DEF_FALSE;
+             ret = OS_FALSE;
              break;
 
 
@@ -1060,13 +1045,13 @@ CPU_BOOLEAN  OSIntCurTaskSuspend (void)
                        p_task->OSTaskName,
                        p_task->ThreadID);
 
-             ret = DEF_FALSE;
+             ret = OS_FALSE;
              break;
 
 
 #endif
         default:
-             ret = DEF_FALSE;
+             ret = OS_FALSE;
              break;
     }
 
@@ -1074,7 +1059,6 @@ CPU_BOOLEAN  OSIntCurTaskSuspend (void)
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                        OSIntCurTaskResume()
@@ -1083,8 +1067,8 @@ CPU_BOOLEAN  OSIntCurTaskSuspend (void)
 *
 * Arguments  : None.
 *
-* Returns    : DEF_TRUE,  current task     resumed successfully.
-*              DEF_FALSE, current task NOT resumed.
+* Returns    : OS_TRUE,  current task     resumed successfully.
+*              OS_FALSE, current task NOT resumed.
 *
 * Notes      : 1) Current task MUST be resumed after OSIntExit().
 *
@@ -1107,21 +1091,21 @@ CPU_BOOLEAN  OSIntCurTaskResume (void)
              ResumeThread(p_task->ThreadHandle);
                                                             /* Wait while task is created and ready to run.           */
              SignalObjectAndWait(p_task->SignalPtr, p_task->InitSignalPtr, INFINITE, FALSE);
-             ret = DEF_TRUE;
+             ret = OS_TRUE;
              break;
 
 
         case STATE_INTERRUPTED:
              p_task->TaskState = STATE_RUNNING;
              ResumeThread(p_task->ThreadHandle);
-             ret = DEF_TRUE;
+             ret = OS_TRUE;
              break;
 
 
         case STATE_SUSPENDED:
              p_task->TaskState = STATE_RUNNING;
              SetEvent(p_task->SignalPtr);
-             ret = DEF_TRUE;
+             ret = OS_TRUE;
              break;
 
 
@@ -1131,7 +1115,7 @@ CPU_BOOLEAN  OSIntCurTaskResume (void)
                        p_tcb->Prio,
                        p_task->OSTaskName,
                        p_task->ThreadID);
-             ret = DEF_FALSE;
+             ret = OS_FALSE;
              break;
 
 
@@ -1140,7 +1124,7 @@ CPU_BOOLEAN  OSIntCurTaskResume (void)
                        p_tcb->Prio,
                        p_task->OSTaskName,
                        p_task->ThreadID);
-             ret = DEF_FALSE;
+             ret = OS_FALSE;
              break;
 
 
@@ -1149,7 +1133,7 @@ CPU_BOOLEAN  OSIntCurTaskResume (void)
                        p_tcb->Prio,
                        p_task->OSTaskName,
                        p_task->ThreadID);
-             ret = DEF_FALSE;
+             ret = OS_FALSE;
              break;
 
 
@@ -1158,13 +1142,13 @@ CPU_BOOLEAN  OSIntCurTaskResume (void)
                        p_tcb->Prio,
                        p_task->OSTaskName,
                        p_task->ThreadID);
-             ret = DEF_FALSE;
+             ret = OS_FALSE;
              break;
 
 
 #endif
         default:
-             ret = DEF_FALSE;
+             ret = OS_FALSE;
              break;
     }
 
@@ -1172,7 +1156,6 @@ CPU_BOOLEAN  OSIntCurTaskResume (void)
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                      WIN32 TASK - OSTickW32()
@@ -1203,7 +1186,7 @@ static  DWORD  WINAPI  OSTickW32 (LPVOID  p_arg)
 
     (void)p_arg;                                            /* Prevent compiler warning                               */
 
-    terminate = DEF_FALSE;
+    terminate = OS_FALSE;
     while (!terminate) {
 #if   (OS_CFG_TIMER_METHOD_WIN32 == WIN32_MM_TMR)
         switch (WaitForMultipleObjects(2, wait_signal, FALSE, INFINITE)) {
@@ -1216,7 +1199,7 @@ static  DWORD  WINAPI  OSTickW32 (LPVOID  p_arg)
                  CPU_CRITICAL_ENTER();
 
                  suspended = OSIntCurTaskSuspend();
-                 if (suspended == DEF_TRUE) {
+                 if (suspended == OS_TRUE) {
                      OSIntEnter();
                      OSTimeTick();
                      OSIntExit();
@@ -1228,7 +1211,7 @@ static  DWORD  WINAPI  OSTickW32 (LPVOID  p_arg)
 
 
             case WAIT_OBJECT_0 + 0u:
-                 terminate = DEF_TRUE;
+                 terminate = OS_TRUE;
                  break;
 
 
@@ -1236,7 +1219,7 @@ static  DWORD  WINAPI  OSTickW32 (LPVOID  p_arg)
 #ifdef OS_CFG_MSG_TRACE_EN
                  OS_Printf("Thread    '%-32s' Error: Invalid signal.\n", "OSTickW32");
 #endif
-                 terminate = DEF_TRUE;
+                 terminate = OS_TRUE;
                  break;
         }
     }
@@ -1249,7 +1232,6 @@ static  DWORD  WINAPI  OSTickW32 (LPVOID  p_arg)
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                      WIN32 TASK - OSTaskW32()
@@ -1294,7 +1276,6 @@ static  DWORD  WINAPI  OSTaskW32 (LPVOID  p_arg)
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                             OSTaskGet()
@@ -1327,7 +1308,6 @@ static  OS_TASK  *OSTaskGet (OS_TCB  *p_tcb)
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                          OSTaskTerminate()
@@ -1399,7 +1379,6 @@ static  void  OSTaskTerminate (OS_TASK  *p_task)
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                        OSCtrlBreakHandler()
@@ -1447,7 +1426,6 @@ static  BOOL  WINAPI  OSCtrlBreakHandler (DWORD  ctrl)
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                             OS_Printf()
@@ -1479,7 +1457,6 @@ static  int  OS_Printf (char  *p_str, ...)
 #endif
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                          OSDebuggerBreak()
@@ -1509,7 +1486,6 @@ void  OSDebuggerBreak (void)
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                          OSSetThreadName()

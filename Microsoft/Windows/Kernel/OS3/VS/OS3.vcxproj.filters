@@ -158,9 +158,6 @@
     <ClCompile Include="..\..\..\..\..\Micrium\Software\uCOS-III\Source\os_mem.c">
       <Filter>Source Files\Micrium\Software\uCOS-III\Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Micrium\Software\uCOS-III\Source\os_mon.c">
-      <Filter>Source Files\Micrium\Software\uCOS-III\Source</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Micrium\Software\uCOS-III\Source\os_msg.c">
       <Filter>Source Files\Micrium\Software\uCOS-III\Source</Filter>
     </ClCompile>

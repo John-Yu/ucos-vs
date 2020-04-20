@@ -1,40 +1,31 @@
 /*
 *********************************************************************************************************
-*                                                uC/OS-II
-*                                          The Real-Time Kernel
-*                                     Microsoft Win32 Specific code
+*                                              uC/OS-II
+*                                        The Real-Time Kernel
 *
-*                                 (c) Copyright 2008; Micrium; Weston, FL
-*                                           All Rights Reserved
+*                    Copyright 1992-2020 Silicon Laboratories Inc. www.silabs.com
 *
-* File    : OS_CPU_C.C
-* By      : FGK
+*                                 SPDX-License-Identifier: APACHE-2.0
 *
-* LICENSING TERMS:
-* ---------------
-*   uC/OS-II is provided in source form for FREE evaluation, for educational use or for peaceful research.
-* If you plan on using  uC/OS-II  in a commercial product you need to contact Micrium to properly  license
-* its use in your product.  We provide ALL the source code for your convenience and to help you experience
-* uC/OS-II.   The fact that the  source  is provided does  NOT  mean that you can use it without  paying a
-* licensing fee.
+*               This software is subject to an open source license and is distributed by
+*                Silicon Laboratories Inc. pursuant to the terms of the Apache License,
+*                    Version 2.0 available at www.apache.org/licenses/LICENSE-2.0.
+*
 *********************************************************************************************************
 */
-
-#define   OS_CPU_GLOBALS
 
 
 /*
 *********************************************************************************************************
 *
-*                                            uC/OS-II Port
+*                                    Microsoft Win32 Specific code
 *
-*                                           Microsoft Win32
-*
-* Filename      : os_cpu_c.c
-* Version       : V2.92.13
-* Programmer(s) : FGK
+* Filename : os_cpu_c.c
+* Version  : V2.93.00
 *********************************************************************************************************
 */
+
+#define   OS_CPU_GLOBALS
 
 
 /*
@@ -54,7 +45,6 @@
 #include  <stdio.h>
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                            LOCAL DEFINES
@@ -68,10 +58,7 @@
 
 #define  WIN_MM_MIN_RES                                     1u          /* Minimum timer resolution.                                */
 
-//#define  OS_MSG_TRACE                                       1u          /* Allow print trace messages.                              */
-#define  OS_MSG_TRACE                                       0u          /* Disable print trace messages.                            */
-#define  OS_TASK_PRIO_TRACE									1u			/* @yc9559: Tell you which task is currently running		*/
-
+#define  OS_MSG_TRACE                                       1u          /* Allow print trace messages.                              */
 
 #ifdef  _MSC_VER
 #define  MS_VC_EXCEPTION                           0x406D1388
@@ -128,7 +115,6 @@ typedef  struct  threadname_info {
 #endif
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                           LOCAL VARIABLES
@@ -170,7 +156,7 @@ static  void           OSSetThreadName   (DWORD         thread_id,
 static  int            OS_Printf         (char         *p_str, ...);
 #endif
 
-/*$PAGE*/
+
 /*
 *********************************************************************************************************
 *                                       OS INITIALIZATION HOOK
@@ -320,7 +306,6 @@ void  OSInitHookBegin (void)
 #endif
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                       OS INITIALIZATION HOOK
@@ -340,7 +325,6 @@ void  OSInitHookEnd (void)
 #endif
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                         TASK CREATION HOOK
@@ -364,7 +348,6 @@ void  OSTaskCreateHook (OS_TCB  *p_tcb)
 #endif
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                         TASK DELETION HOOK
@@ -421,7 +404,6 @@ void  OSTaskDelHook (OS_TCB  *p_tcb)
 #endif
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                           IDLE TASK HOOK
@@ -471,7 +453,6 @@ void  OSTaskReturnHook (OS_TCB  *p_tcb)
 #endif
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                         STATISTIC TASK HOOK
@@ -492,7 +473,6 @@ void  OSTaskStatHook (void)
 #endif
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                      INITIALIZE A TASK'S STACK
@@ -537,7 +517,6 @@ OS_STK  *OSTaskStkInit (void  (*task)(void  *pd), void  *p_arg, OS_STK  *ptos, I
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                          TASK SWITCH HOOK
@@ -559,17 +538,10 @@ void  OSTaskSwHook (void)
 #if (OS_APP_HOOKS_EN > 0u)
     App_TaskSwHook();
 #endif
-
-//@yc9559: Tell you which task is currently running
-#if	(OS_TASK_PRIO_TRACE > 0u)
-	if (OSTCBHighRdy->OSTCBPrio < OS_TASK_TMR_PRIO)
-		printf("%d to [ %d ]\n", OSTCBCur->OSTCBPrio, OSTCBHighRdy->OSTCBPrio);
-#endif
 }
 #endif
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                          OS_TCBInit() HOOK
@@ -641,7 +613,6 @@ void  OSTCBInitHook (OS_TCB  *p_tcb)
 #endif
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                              TICK HOOK
@@ -671,7 +642,6 @@ void  OSTimeTickHook (void)
 #endif
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                              START HIGHEST PRIORITY TASK READY-TO-RUN
@@ -744,7 +714,6 @@ void  OSStartHighRdy (void)
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                      TASK LEVEL CONTEXT SWITCH
@@ -899,7 +868,6 @@ void  OSCtxSw (void)
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                   INTERRUPT LEVEL CONTEXT SWITCH
@@ -930,7 +898,6 @@ void  OSIntCtxSw (void)
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                        OSIntCurTaskSuspend()
@@ -1040,7 +1007,6 @@ CPU_BOOLEAN  OSIntCurTaskSuspend (void)
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                        OSIntCurTaskResume()
@@ -1138,7 +1104,6 @@ CPU_BOOLEAN  OSIntCurTaskResume (void)
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                      WIN32 TASK - OSTickW32()
@@ -1215,7 +1180,6 @@ static  DWORD  WINAPI  OSTickW32 (LPVOID  p_arg)
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                      WIN32 TASK - OSTaskW32()
@@ -1257,7 +1221,6 @@ static  DWORD  WINAPI  OSTaskW32 (LPVOID  p_arg)
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                          OSTaskTerminate()
@@ -1291,7 +1254,6 @@ static  void  OSTaskTerminate (OS_TASK_STK  *p_stk)
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                        OSCtrlBreakHandler()
@@ -1339,7 +1301,6 @@ static  BOOL  WINAPI  OSCtrlBreakHandler (DWORD  ctrl)
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                             OS_Printf()
@@ -1371,7 +1332,6 @@ static  int  OS_Printf (char  *p_str, ...)
 #endif
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                          OSDebuggerBreak()
@@ -1399,7 +1359,6 @@ void  OSDebuggerBreak (void)
 }
 
 
-/*$PAGE*/
 /*
 *********************************************************************************************************
 *                                          OSSetThreadName()

@@ -9,11 +9,6 @@
 *               part, or may be used as a reference only. This file can be modified as
 *               required to meet the end-product requirements.
 *
-*               Please help us continue to provide the Embedded community with the finest
-*               software available.  Your honesty is greatly appreciated.
-*
-*               You can find information about uC/LIB by visiting doc.micrium.com.
-*               You can contact us at: www.micrium.com
 *********************************************************************************************************
 */
 
@@ -22,11 +17,12 @@
 *
 *                                  CUSTOM LIBRARY CONFIGURATION FILE
 *
-* Filename      : lib_cfg.h
-* Version       : V1.38.02.00
+*                                              TEMPLATE
+*
+* Filename : lib_cfg.h
+* Version  : V1.39.00
 *********************************************************************************************************
 */
-
 
 /*
 *********************************************************************************************************

@@ -9,12 +9,6 @@
 *               part, or may be used as a reference only. This file can be modified as
 *               required to meet the end-product requirements.
 *
-*               Please help us continue to provide the Embedded community with the finest
-*               software available.  Your honesty is greatly appreciated.
-*
-*               You can find our product's user manual, API reference, release notes and
-*               more information at https://doc.micrium.com.
-*               You can contact us at www.micrium.com.
 *********************************************************************************************************
 */
 
@@ -25,7 +19,7 @@
 *                                          Application Hooks
 *
 * Filename : app_hooks.c
-* Version  : V2.92.13
+* Version  : V2.93.00
 *********************************************************************************************************
 */
 
@@ -112,9 +106,7 @@
 
 void  App_TaskCreateHook (OS_TCB *ptcb)
 {
-#if (APP_CFG_PROBE_OS_PLUGIN_EN == DEF_ENABLED) && (OS_PROBE_HOOKS_EN > 0)
-    OSProbe_TaskCreateHook(ptcb);
-#endif
+    (void)ptcb;
 }
 
 
@@ -214,9 +206,7 @@ void  App_TaskReturnHook (OS_TCB  *ptcb)
 #if OS_TASK_SW_HOOK_EN > 0
 void  App_TaskSwHook (void)
 {
-#if (APP_CFG_PROBE_OS_PLUGIN_EN > 0) && (OS_PROBE_HOOKS_EN > 0)
-    OSProbe_TaskSwHook();
-#endif
+
 }
 #endif
 
@@ -257,9 +247,7 @@ void  App_TCBInitHook (OS_TCB *ptcb)
 #if OS_TIME_TICK_HOOK_EN > 0
 void  App_TimeTickHook (void)
 {
-#if (APP_CFG_PROBE_OS_PLUGIN_EN == DEF_ENABLED) && (OS_PROBE_HOOKS_EN > 0)
-    OSProbe_TickHook();
-#endif
+
 }
 #endif
 #endif

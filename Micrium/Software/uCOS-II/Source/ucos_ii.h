@@ -1,31 +1,23 @@
 /*
 *********************************************************************************************************
-*                                                uC/OS-II
-*                                          The Real-Time Kernel
+*                                              uC/OS-II
+*                                        The Real-Time Kernel
 *
-*                           (c) Copyright 1992-2017; Micrium, Inc.; Weston; FL
-*                                           All Rights Reserved
+*                    Copyright 1992-2020 Silicon Laboratories Inc. www.silabs.com
 *
-* File    : uCOS_II.H
-* By      : Jean J. Labrosse
-* Version : V2.92.13
+*                                 SPDX-License-Identifier: APACHE-2.0
 *
-* LICENSING TERMS:
-* ---------------
-*   uC/OS-II is provided in source form for FREE evaluation, for educational use or for peaceful research.
-* If you plan on using  uC/OS-II  in a commercial product you need to contact Micrium to properly license
-* its use in your product. We provide ALL the source code for your convenience and to help you experience
-* uC/OS-II.   The fact that the  source is provided does  NOT  mean that you can use it without  paying a
-* licensing fee.
+*               This software is subject to an open source license and is distributed by
+*                Silicon Laboratories Inc. pursuant to the terms of the Apache License,
+*                    Version 2.0 available at www.apache.org/licenses/LICENSE-2.0.
 *
-* Knowledge of the source code may NOT be used to develop a similar product.
-*
-* Please help us continue to provide the embedded community with the finest software available.
-* Your honesty is greatly appreciated.
-*
-* You can find our product's user manual, API reference, release notes and
-* more information at https://doc.micrium.com.
-* You can contact us at www.micrium.com.
+*********************************************************************************************************
+*/
+
+/*
+*********************************************************************************************************
+* Filename : ucos_ii.h
+* Version  : V2.93.00
 *********************************************************************************************************
 */
 
@@ -42,7 +34,7 @@ extern "C" {
 *********************************************************************************************************
 */
 
-#define  OS_VERSION                 29213u              /* Version of uC/OS-II (Vx.yy mult. by 10000)  */
+#define  OS_VERSION                 29300u              /* Version of uC/OS-II (Vx.yy mult. by 10000)  */
 
 /*
 *********************************************************************************************************
@@ -586,11 +578,12 @@ typedef struct os_tcb {
 #endif
 
 #if (OS_EVENT_EN)
-    OS_EVENT        *OSTCBEventPtr;         /* Pointer to          event control block                 */
+    OS_EVENT        *OSTCBEventPtr;         /* Pointer to           event control block                */
 #endif
 
 #if (OS_EVENT_EN) && (OS_EVENT_MULTI_EN > 0u)
-    OS_EVENT       **OSTCBEventMultiPtr;    /* Pointer to multiple event control blocks                */
+    OS_EVENT       **OSTCBEventMultiPtr;    /* Pointer to multiple  event control blocks               */
+    OS_EVENT        *OSTCBEventMultiRdy;    /* Pointer to the first event control block readied        */
 #endif
 
 #if ((OS_Q_EN > 0u) && (OS_MAX_QS > 0u)) || (OS_MBOX_EN > 0u)

@@ -77,8 +77,8 @@
 *********************************************************************************************************
 */
 
-//#define  APP_TRACE_LEVEL                   TRACE_LEVEL_DBG
-#define  APP_TRACE_LEVEL                   TRACE_LEVEL_OFF
+#define  APP_TRACE_LEVEL                   TRACE_LEVEL_DBG
+//#define  APP_TRACE_LEVEL                   TRACE_LEVEL_OFF
 #define  APP_TRACE                         printf
 
 #define  APP_TRACE_INFO(x)    ((APP_TRACE_LEVEL >= TRACE_LEVEL_INFO)  ? (void)(APP_TRACE x) : (void)0)

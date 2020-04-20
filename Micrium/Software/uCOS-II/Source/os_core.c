@@ -1,34 +1,32 @@
 /*
 *********************************************************************************************************
-*                                                uC/OS-II
-*                                          The Real-Time Kernel
-*                                             CORE FUNCTIONS
+*                                              uC/OS-II
+*                                        The Real-Time Kernel
 *
-*                           (c) Copyright 1992-2017; Micrium, Inc.; Weston; FL
-*                                           All Rights Reserved
+*                    Copyright 1992-2020 Silicon Laboratories Inc. www.silabs.com
 *
-* File    : OS_CORE.C
-* By      : Jean J. Labrosse
-* Version : V2.92.13
+*                                 SPDX-License-Identifier: APACHE-2.0
 *
-* LICENSING TERMS:
-* ---------------
-*   uC/OS-II is provided in source form for FREE evaluation, for educational use or for peaceful research.
-* If you plan on using  uC/OS-II  in a commercial product you need to contact Micrium to properly license
-* its use in your product. We provide ALL the source code for your convenience and to help you experience
-* uC/OS-II.   The fact that the  source is provided does  NOT  mean that you can use it without  paying a
-* licensing fee.
+*               This software is subject to an open source license and is distributed by
+*                Silicon Laboratories Inc. pursuant to the terms of the Apache License,
+*                    Version 2.0 available at www.apache.org/licenses/LICENSE-2.0.
 *
-* Knowledge of the source code may NOT be used to develop a similar product.
-*
-* Please help us continue to provide the embedded community with the finest software available.
-* Your honesty is greatly appreciated.
-*
-* You can find our product's user manual, API reference, release notes and
-* more information at https://doc.micrium.com.
-* You can contact us at www.micrium.com.
 *********************************************************************************************************
 */
+
+
+/*
+*********************************************************************************************************
+*
+*                                            CORE FUNCTIONS
+*
+* Filename : os_core.c
+* Version  : V2.93.00
+*********************************************************************************************************
+*/
+
+#ifndef  OS_CORE_C
+#define  OS_CORE_C
 
 #define  MICRIUM_SOURCE
 
@@ -495,7 +493,7 @@ INT16U  OSEventPendMulti (OS_EVENT  **pevents_pend,
     switch (OSTCBCur->OSTCBStatPend) {                  /* Handle event posted, aborted, or timed-out  */
         case OS_STAT_PEND_OK:
         case OS_STAT_PEND_ABORT:
-             pevent = OSTCBCur->OSTCBEventPtr;
+             pevent = OSTCBCur->OSTCBEventMultiRdy;
              if (pevent != (OS_EVENT *)0) {             /* If task event ptr != NULL, ...              */
                 *pevents_rdy++   =  pevent;             /* ... return available event ...              */
                 *pevents_rdy     = (OS_EVENT *)0;       /* ... & NULL terminate return event array     */
@@ -555,8 +553,8 @@ INT16U  OSEventPendMulti (OS_EVENT  **pevents_pend,
 
     OSTCBCur->OSTCBStat          =  OS_STAT_RDY;        /* Set   task  status to ready                 */
     OSTCBCur->OSTCBStatPend      =  OS_STAT_PEND_OK;    /* Clear pend  status                          */
-    OSTCBCur->OSTCBEventPtr      = (OS_EVENT  *)0;      /* Clear event pointers                        */
-    OSTCBCur->OSTCBEventMultiPtr = (OS_EVENT **)0;
+    OSTCBCur->OSTCBEventMultiPtr = (OS_EVENT **)0;      /* Clear event pointers                        */
+    OSTCBCur->OSTCBEventMultiRdy = (OS_EVENT  *)0;
 #if ((OS_MBOX_EN > 0u) ||                 \
     ((OS_Q_EN    > 0u) && (OS_MAX_QS > 0u)))
     OSTCBCur->OSTCBMsg           = (void      *)0;      /* Clear task  message                         */
@@ -1130,7 +1128,8 @@ INT8U  OS_EventTaskRdy (OS_EVENT  *pevent,
 #if (OS_EVENT_MULTI_EN > 0u)
     if (ptcb->OSTCBEventMultiPtr != (OS_EVENT **)0) {   /* Remove this task from events' wait lists    */
         OS_EventTaskRemoveMulti(ptcb, ptcb->OSTCBEventMultiPtr);
-        ptcb->OSTCBEventPtr       = (OS_EVENT  *)pevent;/* Return event as first multi-pend event ready*/
+        ptcb->OSTCBEventMultiPtr  = (OS_EVENT **)0;     /* No longer pending on multi list             */
+        ptcb->OSTCBEventMultiRdy  = (OS_EVENT  *)pevent;/* Return event as first multi-pend event ready*/
     }
 #endif
 
@@ -1197,8 +1196,8 @@ void  OS_EventTaskWaitMulti (OS_EVENT **pevents_wait)
     INT8U      y;
 
 
-    OSTCBCur->OSTCBEventPtr      = (OS_EVENT  *)0;
     OSTCBCur->OSTCBEventMultiPtr = (OS_EVENT **)pevents_wait;       /* Store ptr to ECBs in TCB        */
+    OSTCBCur->OSTCBEventMultiRdy = (OS_EVENT  *)0;
 
     pevents =  pevents_wait;
     pevent  = *pevents;
@@ -1842,9 +1841,7 @@ void  OS_TaskIdle (void *p_arg)
     OS_CPU_SR  cpu_sr = 0u;
 #endif
 
-
-
-    p_arg = p_arg;                               /* Prevent compiler warning for not using 'p_arg'     */
+    (void)p_arg;                                 /* Prevent compiler warning for not using 'p_arg'     */
     for (;;) {
         OS_ENTER_CRITICAL();
         OSIdleCtr++;
@@ -1881,6 +1878,7 @@ void  OS_TaskIdle (void *p_arg)
 #if OS_TASK_STAT_EN > 0u
 void  OS_TaskStat (void *p_arg)
 {
+    INT8S  usage;
 #if OS_CRITICAL_METHOD == 3u                     /* Allocate storage for CPU status register           */
     OS_CPU_SR  cpu_sr = 0u;
 #endif
@@ -1906,16 +1904,30 @@ void  OS_TaskStat (void *p_arg)
     OSIdleCtr = OSIdleCtrMax * 100uL;            /* Set initial CPU usage as 0%                        */
     OS_EXIT_CRITICAL();
     for (;;) {
+        OSTimeDly(1);                            /* Synchronize with clock tick                        */
+
         OS_ENTER_CRITICAL();
-        OSIdleCtrRun = OSIdleCtr;                /* Obtain the of the idle counter for the past second */
-        OSIdleCtr    = 0uL;                      /* Reset the idle counter for the next second         */
+        OSIdleCtr = 0uL;                        /* Reset the idle counter for the next second         */
         OS_EXIT_CRITICAL();
-        OSCPUUsage   = (INT8U)(100uL - OSIdleCtrRun / OSIdleCtrMax);
+
+        OSTimeDly(OS_TICKS_PER_SEC / 10u);       /* Accumulate OSIdleCtr for the next 1/10 second      */
+
+        OS_ENTER_CRITICAL();
+        OSIdleCtrRun = OSIdleCtr;                /* Store number of cycles which elapsed while idle    */
+        OS_EXIT_CRITICAL();
+
+        usage            = 100 - (INT8S)(OSIdleCtrRun / OSIdleCtrMax);
+        if (usage >= 0) {                        /* Make sure we don't have a negative percentage      */
+            OSCPUUsage   = (INT8U)usage;
+        } else {
+            OSCPUUsage   = 0u;
+            OSIdleCtrMax = OSIdleCtrRun / 100uL; /* Update max counter value to current one            */
+        }
+
         OSTaskStatHook();                        /* Invoke user definable hook                         */
 #if (OS_TASK_STAT_STK_CHK_EN > 0u) && (OS_TASK_CREATE_EXT_EN > 0u)
         OS_TaskStatStkChk();                     /* Check the stacks for each task                     */
 #endif
-        OSTimeDly(OS_TICKS_PER_SEC / 10u);       /* Accumulate OSIdleCtr for the next 1/10 second      */
     }
 }
 #endif
@@ -2073,6 +2085,7 @@ INT8U  OS_TCBInit (INT8U    prio,
         ptcb->OSTCBEventPtr      = (OS_EVENT  *)0;         /* Task is not pending on an  event         */
 #if (OS_EVENT_MULTI_EN > 0u)
         ptcb->OSTCBEventMultiPtr = (OS_EVENT **)0;         /* Task is not pending on any events        */
+        ptcb->OSTCBEventMultiRdy = (OS_EVENT  *)0;         /* No events readied for Multipend          */
 #endif
 #endif
 
@@ -2136,3 +2149,5 @@ INT8U  OS_TCBInit (INT8U    prio,
     OS_EXIT_CRITICAL();
     return (OS_ERR_TASK_NO_MORE_TCB);
 }
+
+#endif

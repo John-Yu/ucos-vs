@@ -1,34 +1,32 @@
 /*
 *********************************************************************************************************
-*                                                uC/OS-II
-*                                          The Real-Time Kernel
-*                                          SEMAPHORE MANAGEMENT
+*                                              uC/OS-II
+*                                        The Real-Time Kernel
 *
-*                           (c) Copyright 1992-2017; Micrium, Inc.; Weston; FL
-*                                           All Rights Reserved
+*                    Copyright 1992-2020 Silicon Laboratories Inc. www.silabs.com
 *
-* File    : OS_SEM.C
-* By      : Jean J. Labrosse
-* Version : V2.92.13
+*                                 SPDX-License-Identifier: APACHE-2.0
 *
-* LICENSING TERMS:
-* ---------------
-*   uC/OS-II is provided in source form for FREE evaluation, for educational use or for peaceful research.
-* If you plan on using  uC/OS-II  in a commercial product you need to contact Micrium to properly license
-* its use in your product. We provide ALL the source code for your convenience and to help you experience
-* uC/OS-II.   The fact that the  source is provided does  NOT  mean that you can use it without  paying a
-* licensing fee.
+*               This software is subject to an open source license and is distributed by
+*                Silicon Laboratories Inc. pursuant to the terms of the Apache License,
+*                    Version 2.0 available at www.apache.org/licenses/LICENSE-2.0.
 *
-* Knowledge of the source code may NOT be used to develop a similar product.
-*
-* Please help us continue to provide the embedded community with the finest software available.
-* Your honesty is greatly appreciated.
-*
-* You can find our product's user manual, API reference, release notes and
-* more information at https://doc.micrium.com.
-* You can contact us at www.micrium.com.
 *********************************************************************************************************
 */
+
+
+/*
+*********************************************************************************************************
+*
+*                                         SEMAPHORE MANAGEMENT
+*
+* Filename : os_sem.c
+* Version  : V2.93.00
+*********************************************************************************************************
+*/
+
+#ifndef  OS_SEM_C
+#define  OS_SEM_C
 
 #define  MICRIUM_SOURCE
 
@@ -133,7 +131,7 @@ OS_EVENT  *OSSemCreate (INT16U cnt)
         pevent->OSEventName    = (INT8U *)(void *)"?";
 #endif
         OS_EventWaitListInit(pevent);                      /* Initialize to 'nobody waiting' on sem.   */
-        
+
         OS_TRACE_SEM_CREATE(pevent, pevent->OSEventName);
     }
     return (pevent);
@@ -396,6 +394,7 @@ void  OSSemPend (OS_EVENT  *pevent,
     OSTCBCur->OSTCBEventPtr      = (OS_EVENT  *)0;    /* Clear event pointers                          */
 #if (OS_EVENT_MULTI_EN > 0u)
     OSTCBCur->OSTCBEventMultiPtr = (OS_EVENT **)0;
+    OSTCBCur->OSTCBEventMultiRdy = (OS_EVENT  *)0;
 #endif
     OS_EXIT_CRITICAL();
 
@@ -677,3 +676,4 @@ void  OSSemSet (OS_EVENT  *pevent,
 #endif
 
 #endif                                                /* OS_SEM_EN                                     */
+#endif                                                /* OS_SEM_C                                      */

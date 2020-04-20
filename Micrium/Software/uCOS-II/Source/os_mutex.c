@@ -1,34 +1,32 @@
 /*
 *********************************************************************************************************
-*                                                uC/OS-II
-*                                          The Real-Time Kernel
-*                                  MUTUAL EXCLUSION SEMAPHORE MANAGEMENT
+*                                              uC/OS-II
+*                                        The Real-Time Kernel
 *
-*                           (c) Copyright 1992-2017; Micrium, Inc.; Weston; FL
-*                                           All Rights Reserved
+*                    Copyright 1992-2020 Silicon Laboratories Inc. www.silabs.com
 *
-* File    : OS_MUTEX.C
-* By      : Jean J. Labrosse
-* Version : V2.92.13
+*                                 SPDX-License-Identifier: APACHE-2.0
 *
-* LICENSING TERMS:
-* ---------------
-*   uC/OS-II is provided in source form for FREE evaluation, for educational use or for peaceful research.
-* If you plan on using  uC/OS-II  in a commercial product you need to contact Micrium to properly license
-* its use in your product. We provide ALL the source code for your convenience and to help you experience
-* uC/OS-II.   The fact that the  source is provided does  NOT  mean that you can use it without  paying a
-* licensing fee.
+*               This software is subject to an open source license and is distributed by
+*                Silicon Laboratories Inc. pursuant to the terms of the Apache License,
+*                    Version 2.0 available at www.apache.org/licenses/LICENSE-2.0.
 *
-* Knowledge of the source code may NOT be used to develop a similar product.
-*
-* Please help us continue to provide the embedded community with the finest software available.
-* Your honesty is greatly appreciated.
-*
-* You can find our product's user manual, API reference, release notes and
-* more information at https://doc.micrium.com.
-* You can contact us at www.micrium.com.
 *********************************************************************************************************
 */
+
+
+/*
+*********************************************************************************************************
+*
+*                                 MUTUAL EXCLUSION SEMAPHORE MANAGEMENT
+*
+* Filename : os_mutex.c
+* Version  : V2.93.00
+*********************************************************************************************************
+*/
+
+#ifndef  OS_MUTEX_C
+#define  OS_MUTEX_C
 
 #define  MICRIUM_SOURCE
 
@@ -127,7 +125,7 @@ BOOLEAN  OSMutexAccept (OS_EVENT  *pevent,
     pcp = (INT8U)(pevent->OSEventCnt >> 8u);           /* Get PCP from mutex                           */
     if ((pevent->OSEventCnt & OS_MUTEX_KEEP_LOWER_8) == OS_MUTEX_AVAILABLE) {
         pevent->OSEventCnt &= OS_MUTEX_KEEP_UPPER_8;   /*      Mask off LSByte (Acquire Mutex)         */
-        pevent->OSEventCnt |= OSTCBCur->OSTCBPrio;     /*      Save current task priority in LSByte    */
+        pevent->OSEventCnt |= (INT16U)OSTCBCur->OSTCBPrio;  /* Save current task priority in LSByte    */
         pevent->OSEventPtr  = (void *)OSTCBCur;        /*      Link TCB of task owning Mutex           */
         if ((pcp != OS_PRIO_MUTEX_CEIL_DIS) &&
             (OSTCBCur->OSTCBPrio <= pcp)) {            /*      PCP 'must' have a SMALLER prio ...      */
@@ -420,7 +418,7 @@ OS_EVENT  *OSMutexDel (OS_EVENT  *pevent,
     }
 
     OS_TRACE_MUTEX_DEL_EXIT(*perr);
-    
+
     return (pevent_return);
 }
 #endif
@@ -518,7 +516,7 @@ void  OSMutexPend (OS_EVENT  *pevent,
                                                            /* Is Mutex available?                      */
     if ((INT8U)(pevent->OSEventCnt & OS_MUTEX_KEEP_LOWER_8) == OS_MUTEX_AVAILABLE) {
         pevent->OSEventCnt &= OS_MUTEX_KEEP_UPPER_8;       /* Yes, Acquire the resource                */
-        pevent->OSEventCnt |= OSTCBCur->OSTCBPrio;         /*      Save priority of owning task        */
+        pevent->OSEventCnt |= (INT16U)OSTCBCur->OSTCBPrio; /*      Save priority of owning task        */
         pevent->OSEventPtr  = (void *)OSTCBCur;            /*      Point to owning task's OS_TCB       */
         if ((pcp != OS_PRIO_MUTEX_CEIL_DIS) &&
             (OSTCBCur->OSTCBPrio <= pcp)) {                /*      PCP 'must' have a SMALLER prio ...  */
@@ -555,9 +553,9 @@ void  OSMutexPend (OS_EVENT  *pevent,
                     rdy = OS_FALSE;                        /* No                                       */
                 }
                 ptcb->OSTCBPrio = pcp;                     /* Change owner task prio to PCP            */
-                
+
                 OS_TRACE_MUTEX_TASK_PRIO_INHERIT(ptcb, pcp);
-                
+
 #if OS_LOWEST_PRIO <= 63u
                 ptcb->OSTCBY    = (INT8U)( ptcb->OSTCBPrio >> 3u);
                 ptcb->OSTCBX    = (INT8U)( ptcb->OSTCBPrio & 0x07u);
@@ -609,6 +607,7 @@ void  OSMutexPend (OS_EVENT  *pevent,
     OSTCBCur->OSTCBEventPtr      = (OS_EVENT  *)0;    /* Clear event pointers                          */
 #if (OS_EVENT_MULTI_EN > 0u)
     OSTCBCur->OSTCBEventMultiPtr = (OS_EVENT **)0;
+    OSTCBCur->OSTCBEventMultiRdy = (OS_EVENT  *)0;
 #endif
     OS_EXIT_CRITICAL();
 
@@ -683,7 +682,7 @@ INT8U  OSMutexPost (OS_EVENT *pevent)
                                                       /* Yes, Make HPT waiting for mutex ready         */
         prio                = OS_EventTaskRdy(pevent, (void *)0, OS_STAT_MUTEX, OS_STAT_PEND_OK);
         pevent->OSEventCnt &= OS_MUTEX_KEEP_UPPER_8;  /*      Save priority of mutex's new owner       */
-        pevent->OSEventCnt |= prio;
+        pevent->OSEventCnt |= (INT16U)prio;
         pevent->OSEventPtr  = OSTCBPrioTbl[prio];     /*      Link to new mutex owner's OS_TCB         */
         if ((pcp  != OS_PRIO_MUTEX_CEIL_DIS) &&
             (prio <= pcp)) {                          /*      PCP 'must' have a SMALLER prio ...       */
@@ -816,3 +815,4 @@ static  void  OSMutex_RdyAtPrio (OS_TCB  *ptcb,
 
 
 #endif                                                     /* OS_MUTEX_EN                              */
+#endif                                                     /* OS_MUTEX_C                               */

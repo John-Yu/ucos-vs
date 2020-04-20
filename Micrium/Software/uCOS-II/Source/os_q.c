@@ -1,34 +1,32 @@
 /*
 *********************************************************************************************************
-*                                                uC/OS-II
-*                                          The Real-Time Kernel
-*                                        MESSAGE QUEUE MANAGEMENT
+*                                              uC/OS-II
+*                                        The Real-Time Kernel
 *
-*                           (c) Copyright 1992-2017; Micrium, Inc.; Weston; FL
-*                                           All Rights Reserved
+*                    Copyright 1992-2020 Silicon Laboratories Inc. www.silabs.com
 *
-* File    : OS_Q.C
-* By      : Jean J. Labrosse
-* Version : V2.92.13
+*                                 SPDX-License-Identifier: APACHE-2.0
 *
-* LICENSING TERMS:
-* ---------------
-*   uC/OS-II is provided in source form for FREE evaluation, for educational use or for peaceful research.
-* If you plan on using  uC/OS-II  in a commercial product you need to contact Micrium to properly license
-* its use in your product. We provide ALL the source code for your convenience and to help you experience
-* uC/OS-II.   The fact that the  source is provided does  NOT  mean that you can use it without  paying a
-* licensing fee.
+*               This software is subject to an open source license and is distributed by
+*                Silicon Laboratories Inc. pursuant to the terms of the Apache License,
+*                    Version 2.0 available at www.apache.org/licenses/LICENSE-2.0.
 *
-* Knowledge of the source code may NOT be used to develop a similar product.
-*
-* Please help us continue to provide the embedded community with the finest software available.
-* Your honesty is greatly appreciated.
-*
-* You can find our product's user manual, API reference, release notes and
-* more information at https://doc.micrium.com.
-* You can contact us at www.micrium.com.
 *********************************************************************************************************
 */
+
+
+/*
+*********************************************************************************************************
+*
+*                                       MESSAGE QUEUE MANAGEMENT
+*
+* Filename : os_q.c
+* Version  : V2.93.00
+*********************************************************************************************************
+*/
+
+#ifndef  OS_Q_C
+#define  OS_Q_C
 
 #define  MICRIUM_SOURCE
 
@@ -181,7 +179,7 @@ OS_EVENT  *OSQCreate (void    **start,
             pevent->OSEventName    = (INT8U *)(void *)"?";
 #endif
             OS_EventWaitListInit(pevent);                 /*      Initialize the wait list             */
-            
+
             OS_TRACE_Q_CREATE(pevent, pevent->OSEventName);
         } else {
             pevent->OSEventPtr = (void *)OSEventFreeList; /* No,  Return event control block on error  */
@@ -520,6 +518,7 @@ void  *OSQPend (OS_EVENT  *pevent,
     OSTCBCur->OSTCBEventPtr      = (OS_EVENT  *)0;    /* Clear event pointers                          */
 #if (OS_EVENT_MULTI_EN > 0u)
     OSTCBCur->OSTCBEventMultiPtr = (OS_EVENT **)0;
+    OSTCBCur->OSTCBEventMultiRdy = (OS_EVENT  *)0;
 #endif
     OSTCBCur->OSTCBMsg           = (void      *)0;    /* Clear  received message                       */
     OS_EXIT_CRITICAL();
@@ -962,3 +961,4 @@ void  OS_QInit (void)
 #endif
 }
 #endif                                               /* OS_Q_EN                                        */
+#endif                                               /* OS_Q_C                                         */

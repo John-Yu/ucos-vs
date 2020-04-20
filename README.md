@@ -4,26 +4,26 @@
 
 ## 包含的 MICRIUM 产品版本
 
-- uC/OS-II  v2.92.13 
-- uC/OS-III v3.06.02
-- uC/CPU    v1.31.01
-- uC/LIB    v1.38.02
- 
+- uC/OS-II  v2.93.00 
+- uC/OS-III v3.08.00
+- uC/CPU    v1.32.00
+- uC/LIB    v1.39.00
+
 ## IDE 环境要求
 
 - Visual Studio Community v2019 
- 
+
 ## VS解决方案文件路径
 
 - Microsoft/Windows/Kernel/OS2/VS/OS2.sln
 - Microsoft/Windows/Kernel/OS3/VS/OS3.sln
- 
+
 ## 使用说明
 
 1. 在 Visual Studio 打开上面路径的文件
 2. 在项目上点右键，清理已编译的文件
 3. 修改`Windows SDK Version`为可用的版本，比如`10.0.17134.0`
-4. 编译并运行
+4. F5编译并运行
 
 
 ## 原始链接

@@ -1,23 +1,16 @@
 /*
 *********************************************************************************************************
-*                                                uC/CPU
+*                                               uC/CPU
 *                                    CPU CONFIGURATION & PORT LAYER
 *
-*                          (c) Copyright 2004-2016; Micrium, Inc.; Weston, FL
+*                    Copyright 2004-2020 Silicon Laboratories Inc. www.silabs.com
 *
-*               All rights reserved.  Protected by international copyright laws.
+*                                 SPDX-License-Identifier: APACHE-2.0
 *
-*               uC/CPU is provided in source form to registered licensees ONLY.  It is 
-*               illegal to distribute this source code to any third party unless you receive 
-*               written permission by an authorized Micrium representative.  Knowledge of 
-*               the source code may NOT be used to develop a similar product.
+*               This software is subject to an open source license and is distributed by
+*                Silicon Laboratories Inc. pursuant to the terms of the Apache License,
+*                    Version 2.0 available at www.apache.org/licenses/LICENSE-2.0.
 *
-*               Please help us continue to provide the Embedded community with the finest 
-*               software available.  Your honesty is greatly appreciated.
-*
-*               You can find our product's user manual, API reference, release notes and
-*               more information at doc.micrium.com.
-*               You can contact us at www.micrium.com.
 *********************************************************************************************************
 */
 
@@ -29,9 +22,8 @@
 *                                                Win32
 *                                       Microsoft Visual Studio
 *
-* Filename      : cpu_c.c
-* Version       : V1.31.01
-* Programmer(s) : FGK
+* Filename : cpu_c.c
+* Version  : v1.32.00
 *********************************************************************************************************
 */
 
@@ -313,11 +305,6 @@ static  int  CPU_Printf (char  *p_str, ...)
 *
 *               0,                                                                  otherwise.
 *
-* Caller(s)   : Application.
-*
-*               This function is an INTERNAL CPU module function but MAY be called by application 
-*               function(s).
-*
 * Note(s)     : (1) (a) Supports the following data value sizes :
 *
 *                       (1)  8-bits
@@ -377,7 +364,7 @@ static  int  CPU_Printf (char  *p_str, ...)
 *
 *                       See also 'CPU COUNT LEAD ZEROs LOOKUP TABLE  Note #1'.
 *
-*               (2) MUST be implemented in cpu_a.asm if and only if CPU_CFG_LEAD_ZEROS_ASM_PRESENT 
+*               (2) MUST be implemented in cpu_a.asm if and only if CPU_CFG_LEAD_ZEROS_ASM_PRESENT
 *                   is #define'd in 'cpu_cfg.h' or 'cpu.h'.
 *********************************************************************************************************
 */
@@ -410,11 +397,6 @@ CPU_DATA  CPU_CntLeadZeros (CPU_DATA  val)
 * Argument(s) : val         Data value to count trailing zero bits.
 *
 * Return(s)   : Number of contiguous, least-significant, trailing zero bits in 'val'.
-*
-* Caller(s)   : Application.
-*
-*               This function is a CPU module application programming interface (API) function & MAY 
-*               be called by application function(s).
 *
 * Note(s)     : (1) (a) Supports the following data value sizes :
 *
@@ -490,13 +472,13 @@ CPU_DATA  CPU_CntLeadZeros (CPU_DATA  val)
 *                              1    0    0    0    0         0    0    0           63
 *                              0    0    0    0    0         0    0    0           64
 *
-*               (2) For non-zero values, the returned number of contiguous, least-significant, trailing 
+*               (2) For non-zero values, the returned number of contiguous, least-significant, trailing
 *                   zero bits is also equivalent to the bit position of the least-significant set bit.
 *
 *               (3) 'val' SHOULD be validated for non-'0' PRIOR to all other counting zero calculations :
 *
-*                   (a) CPU_CntTrailZeros()'s final conditional statement calculates 'val's number of 
-*                       trailing zeros based on its return data size, 'CPU_CFG_DATA_SIZE', & 'val's 
+*                   (a) CPU_CntTrailZeros()'s final conditional statement calculates 'val's number of
+*                       trailing zeros based on its return data size, 'CPU_CFG_DATA_SIZE', & 'val's
 *                       calculated number of lead zeros ONLY if the initial 'val' is non-'0' :
 *
 *                           if (val != 0u) {
@@ -505,7 +487,7 @@ CPU_DATA  CPU_CntLeadZeros (CPU_DATA  val)
 *                               nbr_trail_zeros = nbr_lead_zeros;
 *                           }
 *
-*                       Therefore, initially validating all non-'0' values avoids having to conditionally 
+*                       Therefore, initially validating all non-'0' values avoids having to conditionally
 *                       execute the final statement.
 *********************************************************************************************************
 */

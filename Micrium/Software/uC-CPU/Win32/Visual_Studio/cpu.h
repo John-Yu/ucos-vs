@@ -1,23 +1,16 @@
 /*
 *********************************************************************************************************
-*                                                uC/CPU
+*                                               uC/CPU
 *                                    CPU CONFIGURATION & PORT LAYER
 *
-*                          (c) Copyright 2004-2016; Micrium, Inc.; Weston, FL
+*                    Copyright 2004-2020 Silicon Laboratories Inc. www.silabs.com
 *
-*               All rights reserved.  Protected by international copyright laws.
+*                                 SPDX-License-Identifier: APACHE-2.0
 *
-*               uC/CPU is provided in source form to registered licensees ONLY.  It is 
-*               illegal to distribute this source code to any third party unless you receive 
-*               written permission by an authorized Micrium representative.  Knowledge of 
-*               the source code may NOT be used to develop a similar product.
+*               This software is subject to an open source license and is distributed by
+*                Silicon Laboratories Inc. pursuant to the terms of the Apache License,
+*                    Version 2.0 available at www.apache.org/licenses/LICENSE-2.0.
 *
-*               Please help us continue to provide the Embedded community with the finest 
-*               software available.  Your honesty is greatly appreciated.
-*
-*               You can find our product's user manual, API reference, release notes and
-*               more information at doc.micrium.com.
-*               You can contact us at www.micrium.com.
 *********************************************************************************************************
 */
 
@@ -29,11 +22,8 @@
 *                                                Win32
 *                                       Microsoft Visual Studio
 *
-* Filename      : cpu.h
-* Version       : V1.31.01
-* Programmer(s) : FGK
-*                 ITJ
-*                 SR
+* Filename : cpu.h
+* Version  : v1.32.00
 *********************************************************************************************************
 */
 
@@ -42,7 +32,7 @@
 *********************************************************************************************************
 *                                               MODULE
 *
-* Note(s) : (1) This CPU header file is protected from multiple pre-processor inclusion through use of 
+* Note(s) : (1) This CPU header file is protected from multiple pre-processor inclusion through use of
 *               the  CPU module present pre-processor macro definition.
 *********************************************************************************************************
 */
@@ -75,11 +65,11 @@
 *               (b) (1) '\<CPU-Compiler Directory>\'                  directory         See Note #1b1
 *                   (2) '\<CPU-Compiler Directory>\<cpu>\<compiler>\' directory         See Note #1b2
 *
-*           (3) Since NO custom library modules are included, 'cpu.h' may ONLY use configurations from 
+*           (3) Since NO custom library modules are included, 'cpu.h' may ONLY use configurations from
 *               CPU configuration file 'cpu_cfg.h' that do NOT reference any custom library definitions.
 *
-*               In other words, 'cpu.h' may use 'cpu_cfg.h' configurations that are #define'd to numeric 
-*               constants or to NULL (i.e. NULL-valued #define's); but may NOT use configurations to 
+*               In other words, 'cpu.h' may use 'cpu_cfg.h' configurations that are #define'd to numeric
+*               constants or to NULL (i.e. NULL-valued #define's); but may NOT use configurations to
 *               custom library #define's (e.g. DEF_DISABLED or DEF_ENABLED).
 *********************************************************************************************************
 */
@@ -150,7 +140,7 @@ typedef            void      (*CPU_FNCT_PTR )(void *p_obj);     /* See Note #2b.
 *********************************************************************************************************
 *                                       CPU WORD CONFIGURATION
 *
-* Note(s) : (1) Configure CPU_CFG_ADDR_SIZE, CPU_CFG_DATA_SIZE, & CPU_CFG_DATA_SIZE_MAX with CPU's &/or 
+* Note(s) : (1) Configure CPU_CFG_ADDR_SIZE, CPU_CFG_DATA_SIZE, & CPU_CFG_DATA_SIZE_MAX with CPU's &/or
 *               compiler's word sizes :
 *
 *                   CPU_WORD_SIZE_08             8-bit word size
@@ -281,10 +271,10 @@ typedef  CPU_ADDR                 CPU_STK_SIZE;                 /* Defines CPU s
 *                               <cpu>                       directory name for specific CPU
 *                               <compiler>                  directory name for specific compiler
 *
-*           (3) (a) To save/restore interrupt status, a local variable 'cpu_sr' of type 'CPU_SR' MAY need 
+*           (3) (a) To save/restore interrupt status, a local variable 'cpu_sr' of type 'CPU_SR' MAY need
 *                   to be declared (e.g. if 'CPU_CRITICAL_METHOD_STATUS_LOCAL' method is configured).
 *
-*                   (1) 'cpu_sr' local variable SHOULD be declared via the CPU_SR_ALLOC() macro which, if 
+*                   (1) 'cpu_sr' local variable SHOULD be declared via the CPU_SR_ALLOC() macro which, if
 *                        used, MUST be declared following ALL other local variables.
 *
 *                        Example :
@@ -299,7 +289,7 @@ typedef  CPU_ADDR                 CPU_STK_SIZE;                 /* Defines CPU s
 *                                   :
 *                           }
 *
-*               (b) Configure 'CPU_SR' data type with the appropriate-sized CPU data type large enough to 
+*               (b) Configure 'CPU_SR' data type with the appropriate-sized CPU data type large enough to
 *                   completely store the CPU's/compiler's status word.
 *********************************************************************************************************
 */

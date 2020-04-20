@@ -1,24 +1,16 @@
 /*
 *********************************************************************************************************
-*                                                uC/LIB
-*                                        CUSTOM LIBRARY MODULES
+*                                               uC/LIB
+*                                       Custom Library Modules
 *
-*                         (c) Copyright 2004-2015; Micrium, Inc.; Weston, FL
+*                    Copyright 2004-2020 Silicon Laboratories Inc. www.silabs.com
 *
-*                  All rights reserved.  Protected by international copyright laws.
+*                                 SPDX-License-Identifier: APACHE-2.0
 *
-*                  uC/LIB is provided in source form to registered licensees ONLY.  It is
-*                  illegal to distribute this source code to any third party unless you receive
-*                  written permission by an authorized Micrium representative.  Knowledge of
-*                  the source code may NOT be used to develop a similar product.
+*               This software is subject to an open source license and is distributed by
+*                Silicon Laboratories Inc. pursuant to the terms of the Apache License,
+*                    Version 2.0 available at www.apache.org/licenses/LICENSE-2.0.
 *
-*                  Please help us continue to provide the Embedded community with the finest
-*                  software available.  Your honesty is greatly appreciated.
-*
-*                  You can find our product's user manual, API reference, release notes and
-*                  more information at: doc.micrium.com
-*
-*                  You can contact us at: www.micrium.com
 *********************************************************************************************************
 */
 
@@ -27,31 +19,25 @@
 *
 *                                     STANDARD MEMORY OPERATIONS
 *
-* Filename      : lib_mem.c
-* Version       : V1.38.02
-* Programmer(s) : ITJ
-*                 FGK
-*                 JFD
-*                 FBJ
-*                 EJ
+* Filename : lib_mem.c
+* Version  : V1.39.00
 *********************************************************************************************************
-* Note(s)       : (1) NO compiler-supplied standard library functions are used in library or product software.
+* Note(s)  : (1) NO compiler-supplied standard library functions are used in library or product software.
 *
-*                     (a) ALL standard library functions are implemented in the custom library modules :
+*                (a) ALL standard library functions are implemented in the custom library modules :
 *
-*                         (1) \<Custom Library Directory>\lib_*.*
+*                    (1) \<Custom Library Directory>\lib_*.*
 *
-*                         (2) \<Custom Library Directory>\Ports\<cpu>\<compiler>\lib*_a.*
+*                    (2) \<Custom Library Directory>\Ports\<cpu>\<compiler>\lib*_a.*
 *
-*                               where
-*                                       <Custom Library Directory>      directory path for custom library software
-*                                       <cpu>                           directory name for specific processor (CPU)
-*                                       <compiler>                      directory name for specific compiler
+*                          where
+*                                  <Custom Library Directory>      directory path for custom library software
+*                                  <cpu>                           directory name for specific processor (CPU)
+*                                  <compiler>                      directory name for specific compiler
 *
-*                     (b) Product-specific library functions are implemented in individual products.
+*                (b) Product-specific library functions are implemented in individual products.
 *********************************************************************************************************
 */
-
 
 /*
 *********************************************************************************************************
@@ -922,7 +908,8 @@ void  Mem_SegCreate (const  CPU_CHAR    *p_name,
 #endif
 
     CPU_CRITICAL_ENTER();
-#if (LIB_MEM_CFG_ARG_CHK_EXT_EN == DEF_ENABLED)
+#if (LIB_MEM_CFG_ARG_CHK_EXT_EN == DEF_ENABLED) && \
+    (LIB_MEM_CFG_HEAP_SIZE       > 0u)
     (void)Mem_SegOverlapChkCritical(seg_base_addr,              /* Chk for overlap.                                     */
                                     size,
                                     p_err);
@@ -2037,6 +2024,9 @@ void  *Mem_DynPoolBlkGet (MEM_DYN_POOL  *p_pool,
                                  DEF_NULL,
                                  p_err);
     if (*p_err != LIB_MEM_ERR_NONE) {
+        if (p_pool->BlkQtyMax != LIB_MEM_BLK_QTY_UNLIMITED) {
+            p_pool->BlkAllocCnt--;
+        }
         return (DEF_NULL);
     }
 
@@ -2406,6 +2396,8 @@ static  MEM_SEG  *Mem_SegOverlapChkCritical (CPU_ADDR     seg_base_addr,
                    ((seg_base_addr <= seg_chk_start) && (seg_new_end   >= seg_chk_start))) {
            *p_err = LIB_MEM_ERR_INVALID_SEG_OVERLAP;
             return (p_seg_chk);
+        } else {
+                                                                /* Empty Else Statement                                 */
         }
 
         p_seg_chk = p_seg_chk->NextPtr;

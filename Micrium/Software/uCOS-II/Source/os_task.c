@@ -1,34 +1,32 @@
 /*
 *********************************************************************************************************
-*                                                uC/OS-II
-*                                          The Real-Time Kernel
-*                                            TASK MANAGEMENT
+*                                              uC/OS-II
+*                                        The Real-Time Kernel
 *
-*                           (c) Copyright 1992-2017; Micrium, Inc.; Weston; FL
-*                                           All Rights Reserved
+*                    Copyright 1992-2020 Silicon Laboratories Inc. www.silabs.com
 *
-* File    : OS_TASK.C
-* By      : Jean J. Labrosse
-* Version : V2.92.13
+*                                 SPDX-License-Identifier: APACHE-2.0
 *
-* LICENSING TERMS:
-* ---------------
-*   uC/OS-II is provided in source form for FREE evaluation, for educational use or for peaceful research.
-* If you plan on using  uC/OS-II  in a commercial product you need to contact Micrium to properly license
-* its use in your product. We provide ALL the source code for your convenience and to help you experience
-* uC/OS-II.   The fact that the  source is provided does  NOT  mean that you can use it without  paying a
-* licensing fee.
+*               This software is subject to an open source license and is distributed by
+*                Silicon Laboratories Inc. pursuant to the terms of the Apache License,
+*                    Version 2.0 available at www.apache.org/licenses/LICENSE-2.0.
 *
-* Knowledge of the source code may NOT be used to develop a similar product.
-*
-* Please help us continue to provide the embedded community with the finest software available.
-* Your honesty is greatly appreciated.
-*
-* You can find our product's user manual, API reference, release notes and
-* more information at https://doc.micrium.com.
-* You can contact us at www.micrium.com.
 *********************************************************************************************************
 */
+
+
+/*
+*********************************************************************************************************
+*
+*                                            TASK MANAGEMENT
+*
+* Filename : os_task.c
+* Version  : V2.93.00
+*********************************************************************************************************
+*/
+
+#ifndef  OS_TASK_C
+#define  OS_TASK_C
 
 #define  MICRIUM_SOURCE
 
@@ -992,7 +990,7 @@ INT8U  OSTaskStkChk (INT8U         prio,
 *              OS_ERR_PRIO_INVALID       if the priority you specify is higher that the maximum allowed
 *                                        (i.e. >= OS_LOWEST_PRIO) or, you have not specified OS_PRIO_SELF.
 *              OS_ERR_TASK_SUSPEND_PRIO  if the task to suspend does not exist
-*              OS_ERR_TASK_NOT_EXITS     if the task is assigned to a Mutex PIP
+*              OS_ERR_TASK_NOT_EXIST     if the task is assigned to a Mutex PIP
 *
 * Note       : You should use this function with great care.  If you suspend a task that is waiting for
 *              an event (i.e. a message, a semaphore, a queue ...) you will prevent this task from
@@ -1385,3 +1383,4 @@ void  OS_TaskStkClr (OS_STK  *pbos,
 }
 
 #endif
+#endif                                                 /* OS_TASK_C                                    */
